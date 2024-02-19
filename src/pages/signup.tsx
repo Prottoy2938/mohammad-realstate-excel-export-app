@@ -27,6 +27,7 @@ import { useState } from 'react';
 import { Hero } from '@/templates/Hero';
 
 import firebase_app from '../firebase/config';
+import { Footer } from '../templates/Footer';
 
 const Signup = () => {
   const router = useRouter();
@@ -106,9 +107,9 @@ const Signup = () => {
   return (
     <>
       <Hero />
-      <Center>
+      <Center mb={20}>
         <VStack spacing={4} mt={8}>
-          <Box p={8} maxW="md" borderWidth={1} borderRadius={8} boxShadow="lg">
+          <Box p={8} maxW="md">
             <Heading mb={4}>Create an Account</Heading>
             <form onSubmit={handleSignup}>
               <FormControl>
@@ -151,6 +152,7 @@ const Signup = () => {
           </Box>
         </VStack>
       </Center>
+      <Footer />
     </>
   );
 };

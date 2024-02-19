@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import signIn from '../firebase/auth/signin';
+import { Footer } from '../templates/Footer';
 import { Hero } from '../templates/Hero';
 
 function Page(): JSX.Element {
@@ -89,6 +90,7 @@ function Page(): JSX.Element {
         </div>
         <a href="/signup">Don&lsquo;t Have an Account? Sign Up</a>
       </div>
+      <Footer />
     </>
   );
 }
