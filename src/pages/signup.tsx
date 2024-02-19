@@ -1,86 +1,158 @@
 'use client';
 
+// pages/signup.tsx
+// pages/signup.tsx
+
+import {
+  Box,
+  Button,
+  Center,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  useToast,
+  VStack,
+} from '@chakra-ui/react';
+import axios from 'axios';
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  getIdToken,
+} from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import type { FormEvent } from 'react';
 import { useState } from 'react';
 
-import signUp from '../firebase/auth/signup';
-import { Hero } from '../templates/Hero';
+import { Hero } from '@/templates/Hero';
 
-function Page(): JSX.Element {
+import firebase_app from '../firebase/config';
+
+const Signup = () => {
+  const router = useRouter();
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-  // Handle form submission
-  const handleForm = async (event: { preventDefault: () => void }) => {
-    event.preventDefault();
+  const toast = useToast();
 
-    // Attempt to sign up with provided email and password
-    const { result, error } = await signUp(email, password);
+  const handleSignup = async (e: FormEvent) => {
+    e.preventDefault();
 
-    if (error) {
-      // Display and log any sign-up errors
-      console.log(error);
-      return;
+    if (email && password && fullName) {
+      const auth = getAuth(firebase_app);
+
+      try {
+        setLoading(true); // Set loading to true on button click
+
+        // Sign up the user using Firebase Authentication
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password,
+        );
+        const { user } = userCredential;
+
+        // Get the user's token
+        // @ts-expect-error
+        const token = await getIdToken(auth.currentUser);
+
+        // Make a POST request to the API with the user's token, fullName, and email
+        const response = await axios
+          .post('/api/create-user-account', {
+            fullName,
+            email,
+            token,
+          })
+          .then((res) => {
+            router.push('/');
+          })
+          .catch((e) => {
+            console.error(e);
+            toast({
+              title: 'Something Went Wrong',
+              description: 'Please contact us if this keeps on happening',
+              status: 'error',
+              duration: 9000,
+              isClosable: true,
+            });
+          });
+      } catch (error) {
+        // Handle Firebase Authentication error
+        console.error('Firebase Authentication error:', error);
+
+        toast({
+          title: 'Something Went Wrong',
+          // @ts-expect-error
+          description: error.message,
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        });
+      } finally {
+        setLoading(false); // Set loading back to false after the process completes
+      }
+    } else {
+      toast({
+        title: 'Please fully fill out the form first',
+        status: 'warning',
+        duration: 9000,
+        isClosable: true,
+      });
     }
-
-    // Sign up successful
-    console.log(result);
-
-    // Redirect to the admin page
-    router.push('/');
   };
 
   return (
     <>
       <Hero />
-
-    <div className="flex h-screen items-center justify-center text-black">
-      <div className="w-96 rounded bg-white p-6 shadow">
-        <h1 className="mb-6 text-3xl font-bold">Registration</h1>
-        <form onSubmit={handleForm} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="mb-1 block font-medium">
-              Email
-            </label>
-            <input
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              type="email"
-              name="email"
-              id="email"
-              placeholder="example@mail.com"
-              className="w-full rounded border border-gray-300 px-3 py-2"
-            />
-          </div>
-          <div>
-            <label htmlFor="password" className="mb-1 block font-medium">
-              Password
-            </label>
-            <input
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              type="password"
-              name="password"
-              id="password"
-              placeholder="password"
-              className="w-full rounded border border-gray-300 px-3 py-2"
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full rounded bg-blue-500 py-2 font-semibold text-white"
-          >
-            Sign up
-          </button>
-        </form>
-        <a href="/signin" style={{ marginTop: '15px' }}>
-          Have an Account? Sign In
-        </a>
-      </div>
-    </div>
+      <Center>
+        <VStack spacing={4} mt={8}>
+          <Box p={8} maxW="md" borderWidth={1} borderRadius={8} boxShadow="lg">
+            <Heading mb={4}>Create an Account</Heading>
+            <form onSubmit={handleSignup}>
+              <FormControl>
+                <FormLabel htmlFor="fullName">Full Name</FormLabel>
+                <Input
+                  type="text"
+                  id="fullName"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="email">Email</FormLabel>
+                <Input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel htmlFor="password">Password</FormLabel>
+                <Input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </FormControl>
+              <Button
+                type="submit"
+                colorScheme="blue"
+                mt={4}
+                isLoading={loading}
+                spinnerPlacement="end"
+              >
+                Registesr
+              </Button>
+            </form>
+          </Box>
+        </VStack>
+      </Center>
     </>
   );
-}
+};
 
-export default Page;
+export default Signup;
