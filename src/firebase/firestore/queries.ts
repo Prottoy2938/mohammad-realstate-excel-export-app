@@ -11,6 +11,7 @@ import {
 import firebase_app from '../config';
 
 // Get the Firestore instance
+// @ts-expect-error
 const db = getFirestore(firebase_app);
 
 const articleQuery = query(

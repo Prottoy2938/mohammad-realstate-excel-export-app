@@ -2,7 +2,9 @@ import { doc, getFirestore, setDoc } from 'firebase/firestore';
 
 import firebase_app from '../config';
 
+
 // Get the Firestore instance
+// @ts-expect-error
 const db = getFirestore(firebase_app);
 
 // Function to add data to a Firestore collection

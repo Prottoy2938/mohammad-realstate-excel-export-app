@@ -15,11 +15,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import axios from 'axios';
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  getIdToken,
-} from 'firebase/auth';
+import { getAuth, getIdToken } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';
 import { useState } from 'react';
@@ -47,26 +43,18 @@ const Signup = () => {
       try {
         setLoading(true); // Set loading to true on button click
 
-        // Sign up the user using Firebase Authentication
-        const userCredential = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password,
-        );
-        const { user } = userCredential;
-
         // Get the user's token
         // @ts-expect-error
         const token = await getIdToken(auth.currentUser);
 
         // Make a POST request to the API with the user's token, fullName, and email
-        const response = await axios
+        await axios
           .post('/api/create-user-account', {
             fullName,
             email,
             token,
           })
-          .then((res) => {
+          .then(() => {
             router.push('/');
           })
           .catch((e) => {

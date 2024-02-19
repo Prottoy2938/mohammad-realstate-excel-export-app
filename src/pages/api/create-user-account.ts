@@ -1,7 +1,6 @@
 // pages/api/addHealthcareWorker.ts
 
 import admin from 'firebase-admin';
-import type { NextApiResponse } from 'next';
 import { type NextRequest } from 'next/server';
 
 import verifyIdToken from '../../firebase/verify-token';
@@ -22,7 +21,7 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
-export async function POST(request: NextRequest, res: NextApiResponse) {
+export async function POST(request: NextRequest) {
   try {
     const { fullName, email, token } = await request.json();
     const userInfo = await verifyIdToken(token.toString());
