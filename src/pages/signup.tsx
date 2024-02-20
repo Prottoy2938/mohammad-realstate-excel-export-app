@@ -15,7 +15,11 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import axios from 'axios';
-import { getAuth, getIdToken } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  getIdToken,
+} from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';
 import { useState } from 'react';
@@ -43,29 +47,39 @@ const Signup = () => {
       try {
         setLoading(true); // Set loading to true on button click
 
-        // Get the user's token
-        // @ts-expect-error
-        const token = await getIdToken(auth.currentUser);
+        createUserWithEmailAndPassword(auth, email, password)
+          .then(async (userCredential) => {
+            // Signed up successfully
+            const { user } = userCredential;
+            // Get the user's token
+            const token = await getIdToken(user);
 
-        // Make a POST request to the API with the user's token, fullName, and email
-        await axios
-          .post('/api/create-user-account', {
-            fullName,
-            email,
-            token,
+            // Make a POST request to the API with the user's token, fullName, and email
+            await axios
+              .post('/api/create-user-account', {
+                fullName,
+                email,
+                token,
+              })
+              .then(() => {
+                router.push('/dashboard');
+              })
+              .catch((e) => {
+                console.error(e);
+                toast({
+                  title: 'Something Went Wrong',
+                  description: 'Please contact us if this keeps on happening',
+                  status: 'error',
+                  duration: 9000,
+                  isClosable: true,
+                });
+              });
           })
-          .then(() => {
-            router.push('/');
-          })
-          .catch((e) => {
-            console.error(e);
-            toast({
-              title: 'Something Went Wrong',
-              description: 'Please contact us if this keeps on happening',
-              status: 'error',
-              duration: 9000,
-              isClosable: true,
-            });
+          .catch((error) => {
+            // Handle errors
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error('Error creating user:', errorMessage);
           });
       } catch (error) {
         // Handle Firebase Authentication error

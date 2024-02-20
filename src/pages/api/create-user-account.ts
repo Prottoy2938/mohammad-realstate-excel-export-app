@@ -1,7 +1,8 @@
 // pages/api/addHealthcareWorker.ts
 
 import admin from 'firebase-admin';
-import { type NextRequest } from 'next/server';
+// pages/api/submitForm.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 import verifyIdToken from '../../firebase/verify-token';
 
@@ -21,34 +22,43 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
-export async function POST(request: NextRequest) {
-  try {
-    const { fullName, email, token } = await request.json();
-    const userInfo = await verifyIdToken(token.toString());
-    // Get data from the request body
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method === 'POST') {
+    try {
+      // Parse the incoming JSON data
+      const { fullName, email, token } = req.body;
+      const userInfo = await verifyIdToken(token.toString());
+      // Get data from the request body
 
-    // Ensure the token's email matches the provided email
-    if (userInfo.email !== email) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
+      // Ensure the token's email matches the provided email
+      if (userInfo.email !== email) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401,
+        });
+      }
+
+      await db.collection('users').add({
+        fullName,
+        email,
+        uid: userInfo.uid,
+        createdAt: admin.firestore.Timestamp.fromDate(new Date()),
+        isActive: true,
       });
+      // Here you can handle the incoming data, such as saving it to a database
+
+      // Send a response
+      res.status(200).json({ message: 'success' });
+    } catch (error) {
+      console.log(error);
+      // Handle errors
+      res.status(500).json({ message: 'Internal server error' });
     }
-
-    await db.collection('users').add({
-      fullName,
-      email,
-      uid: userInfo.uid,
-      createdAt: admin.firestore.Timestamp.fromDate(new Date()),
-      isActive: true,
-    });
-
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-    });
-  } catch (error) {
-    console.error('Error:', error);
-    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-      status: 500,
-    });
+  } else {
+    // Method not allowed
+    res.setHeader('Allow', ['POST']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
