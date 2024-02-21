@@ -15,6 +15,9 @@ const Index = () => {
     if (!user) {
       router.push('/');
     }
+    if (user && !user.isActive) {
+      router.push('/');
+    }
   }, []);
 
   return (

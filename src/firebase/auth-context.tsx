@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Spinner, useToast } from '@chakra-ui/react';
+import { Box, Spinner } from '@chakra-ui/react';
 import axios from 'axios';
 import type { User } from 'firebase/auth';
 import { getAuth, getIdToken, onAuthStateChanged } from 'firebase/auth';
@@ -28,8 +28,6 @@ export function AuthContextProvider({
   // Set up state to track the authenticated user and loading status
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const toast = useToast();
 
   useEffect(() => {
     // Subscribe to the authentication state changes

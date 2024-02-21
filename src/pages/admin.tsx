@@ -1,4 +1,4 @@
-import { Box, Button, useToast } from '@chakra-ui/react';
+import { Box, Button } from '@chakra-ui/react';
 import axios from 'axios';
 import { getAuth, getIdToken } from 'firebase/auth';
 import { useRouter } from 'next/router';
@@ -14,7 +14,6 @@ const Index = () => {
   const { user } = useAuthContext() as { user: any }; // Use 'as' to assert the type as { user: any }
   const [allGroups, setAllGroups] = useState(null);
   const [newUsers, setNewUsers] = useState(null);
-  const toast = useToast();
   const auth = getAuth();
 
   const router = useRouter();

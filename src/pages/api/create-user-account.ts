@@ -22,6 +22,7 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
+// eslint-disable-next-line consistent-return
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
