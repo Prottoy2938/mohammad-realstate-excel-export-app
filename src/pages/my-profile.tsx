@@ -1,4 +1,6 @@
 import { Box, Heading, Stack } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 import { useAuthContext } from '@/firebase/auth-context';
 
@@ -7,7 +9,17 @@ import { Hero } from '../templates/Hero';
 
 const Index = () => {
   const { user } = useAuthContext() as { user: any }; // Use 'as' to assert the type as { user: any }
+  const router = useRouter();
 
+  useEffect(() => {
+    console.log(user);
+    if (!user) {
+      router.push('/');
+    }
+    if (user && !user.isActive) {
+      router.push('/');
+    }
+  }, []);
   return (
     <>
       <Hero />
