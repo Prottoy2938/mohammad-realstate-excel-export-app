@@ -3,7 +3,6 @@
 import admin from 'firebase-admin';
 // pages/api/submitForm.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { v4 as uuidv4 } from 'uuid';
 
 import verifyIdToken from '../../firebase/verify-token';
 
@@ -30,10 +29,10 @@ export default async function handler(
   if (req.method === 'POST') {
     try {
       // Parse the incoming JSON data
-      const { groupName, token } = req.body;
-      console.log(groupName);
-
+      const { token } = req.body;
       const userInfo = await verifyIdToken(token.toString());
+      // Get data from the request body
+
       const adminSnapshot = await db
         .collection('users')
         .where('uid', '==', userInfo.uid)
@@ -41,20 +40,20 @@ export default async function handler(
       // @ts-expect-error
       const adminDoc = adminSnapshot.docs[0].data();
       // Ensure the token's email matches the provided email
-      if (adminDoc.userType != 'ultimate-admin') {
+      if (!adminDoc.userType.includes('admin')) {
         res.status(401).json({ message: 'UnAuthorized' });
       }
-      const groupID = uuidv4();
-      await db.collection('groups').add({
-        groupName,
-        groupID,
-        createdByUID: userInfo.uid,
-        createdAt: admin.firestore.Timestamp.fromDate(new Date()),
+
+      const collectionRef = await db.collection('groups').limit(50).get();
+
+      const allData: any[] = [];
+
+      collectionRef.forEach((doc: any) => {
+        allData.push(doc.data());
       });
-      // Here you can handle the incoming data, such as saving it to a database
 
       // Send a response
-      res.status(200).json({ message: 'success' });
+      res.status(200).json({ allData });
     } catch (error) {
       console.log(error);
       // Handle errors

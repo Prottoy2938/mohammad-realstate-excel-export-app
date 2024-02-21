@@ -48,7 +48,7 @@ const Index = () => {
     const token = await getIdToken(auth.currentUser);
 
     await axios
-      .post('/api/create-new-group', {
+      .post('/api/admin-create-new-group', {
         groupName,
         token,
       })
