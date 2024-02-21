@@ -43,11 +43,12 @@ export default async function handler(
       if (adminDoc.userType != 'ultimate-admin') {
         res.status(401).json({ message: 'UnAuthorized' });
       }
-
+      const groupInfo = await db.collection('groups').doc(groupID).get();
       await db.collection('users').doc(user.uid).set(
         {
           isActive: true,
           groupID,
+          groupInfo: groupInfo.data(),
         },
         { merge: true },
       );

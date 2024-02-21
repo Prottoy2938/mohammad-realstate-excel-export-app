@@ -1,5 +1,6 @@
 'use client';
 
+import { useToast } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -11,6 +12,7 @@ function Page(): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+  const toast = useToast();
 
   // Handle form submission
   const handleForm = async (event: { preventDefault: () => void }) => {
@@ -21,6 +23,13 @@ function Page(): JSX.Element {
 
     if (error) {
       // Display and log any sign-in errors
+      toast({
+        title: 'Something Went Wrong',
+        description: 'Please contact us if this keeps on happening',
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
       console.log(error);
       return;
     }

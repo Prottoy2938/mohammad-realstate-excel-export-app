@@ -1,4 +1,4 @@
-import { Box, Button, Heading } from '@chakra-ui/react';
+import { Box, Button, Heading, Spinner } from '@chakra-ui/react';
 import axios from 'axios';
 import { getAuth, getIdToken } from 'firebase/auth';
 import { useRouter } from 'next/router';
@@ -68,7 +68,7 @@ const Index = () => {
             </Button>
           </a>
         )}
-        {allGroups && newUsers && (
+        {allGroups && newUsers ? (
           <Box mb={'10vh'} mt={20}>
             <Heading
               fontSize={'3xl'}
@@ -80,6 +80,19 @@ const Index = () => {
               New User Awaiting Verification
             </Heading>
             <NewUsersTable allGroups={allGroups} newUsers={newUsers} />
+          </Box>
+        ) : (
+          <Box>
+            <Spinner
+              thickness="4px"
+              speed="0.65s"
+              emptyColor="gray.200"
+              color="blue.500"
+              size="xl"
+              pos="fixed"
+              top={'45vh'}
+              left={'48vw'}
+            />
           </Box>
         )}
       </Box>

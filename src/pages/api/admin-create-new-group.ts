@@ -45,13 +45,16 @@ export default async function handler(
         res.status(401).json({ message: 'UnAuthorized' });
       }
       const groupID = uuidv4();
-      await db.collection('groups').add({
-        groupName,
-        groupID,
-        createdByUID: userInfo.uid,
-        createdAt: admin.firestore.Timestamp.fromDate(new Date()),
-        active: true,
-      });
+      await db
+        .collection('groups')
+        .doc(groupID)
+        .set({
+          groupName,
+          groupID,
+          createdByUID: userInfo.uid,
+          createdAt: admin.firestore.Timestamp.fromDate(new Date()),
+          active: true,
+        });
       // Here you can handle the incoming data, such as saving it to a database
 
       // Send a response

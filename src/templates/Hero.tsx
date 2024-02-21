@@ -31,6 +31,13 @@ const Hero = () => {
           <li>
             <Link href="/">Home</Link>
           </li>
+          {user ? (
+            <li>
+              <Link href="/dashboard">Dashboard</Link>
+            </li>
+          ) : (
+            ''
+          )}
           <li>
             <Link href="/contact">Contact Us</Link>
           </li>
