@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Heading,
   Select,
   Table,
   Tbody,
@@ -11,19 +12,21 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import axios from 'axios';
-import { useAuthContext } from '@/firebase/auth-context';
 import { getAuth, getIdToken } from 'firebase/auth';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const NewUsersTable = ({ allGroups, newUsers }) => {
+const NewUsersTable: React.FC<any> = ({ allGroups, newUsers }) => {
   const [selectedGroups, setSelectedGroups] = useState({});
   const toast = useToast();
   const auth = getAuth();
+  useEffect(() => {
+    console.log(newUsers, '<<<');
+  }, []);
 
   const handleSave = async (user: any) => {
     // @ts-expect-error
     const token = await getIdToken(auth.currentUser);
-
+    // @ts-expect-error
     const selectedGroup = selectedGroups[user.uid];
     if (!selectedGroup) {
       toast({
@@ -39,9 +42,8 @@ const NewUsersTable = ({ allGroups, newUsers }) => {
     try {
       await axios.post('/api/admin-add-new-user', {
         user,
-        groupInfo: selectedGroup,
         token,
-        groupID: selectedGroup.groupID,
+        groupID: selectedGroup,
       });
       toast({
         title: 'Success',
@@ -70,45 +72,54 @@ const NewUsersTable = ({ allGroups, newUsers }) => {
   };
 
   return (
-    <Box p={4}>
-      <Table variant="striped" colorScheme="gray">
-        <Thead>
-          <Tr>
-            <Th>Full Name</Th>
-            <Th>Email</Th>
-            <Th>Created At</Th>
-            <Th>Group</Th>
-            <Th>Action</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {newUsers.map((user: any) => (
-            <Tr key={user.uid}>
-              <Td>{user.fullName}</Td>
-              <Td>{user.email}</Td>
-              <Td>{user.createdAt.toDate().toLocaleString()}</Td>
-              <Td>
-                <Select
-                  placeholder="Select group"
-                  onChange={(event) => handleGroupChange(event, user.uid)}
-                >
-                  {allGroups.map((group) => (
-                    <option key={group.groupName} value={group.groupName}>
-                      {group.groupName}
-                    </option>
-                  ))}
-                </Select>
-              </Td>
-              <Td>
-                <Button colorScheme="blue" onClick={() => handleSave(user)}>
-                  Save
-                </Button>
-              </Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-    </Box>
+    <>
+      {allGroups.length ? (
+        <Box p={4}>
+          <Table variant="striped" colorScheme="gray">
+            <Thead>
+              <Tr>
+                <Th>Full Name</Th>
+                <Th>Email</Th>
+                <Th>Created At</Th>
+                <Th>Group</Th>
+                <Th>Action</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {newUsers.map((user: any) => (
+                <Tr key={user.uid}>
+                  <Td>{user.fullName}</Td>
+                  <Td>{user.email}</Td>
+                  <Td>
+                    {/*  eslint-disable-next-line no-underscore-dangle */}
+                    {new Date(user.createdAt._seconds * 1000).toLocaleString()}
+                  </Td>
+                  <Td>
+                    <Select
+                      placeholder="Select group"
+                      onChange={(event) => handleGroupChange(event, user.uid)}
+                    >
+                      {allGroups.map((group: any) => (
+                        <option key={group.groupID} value={group.groupID}>
+                          {group.groupName}
+                        </option>
+                      ))}
+                    </Select>
+                  </Td>
+                  <Td>
+                    <Button colorScheme="blue" onClick={() => handleSave(user)}>
+                      Save
+                    </Button>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+      ) : (
+        <Heading size="md">No New User</Heading>
+      )}
+    </>
   );
 };
 

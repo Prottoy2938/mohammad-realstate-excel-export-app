@@ -40,14 +40,17 @@ export default async function handler(
         });
       }
 
-      await db.collection('users').add({
-        fullName,
-        email,
-        uid: userInfo.uid,
-        createdAt: admin.firestore.Timestamp.fromDate(new Date()),
-        isActive: false,
-        userType: 'regular',
-      });
+      await db
+        .collection('users')
+        .doc(userInfo.uid)
+        .set({
+          fullName,
+          email,
+          uid: userInfo.uid,
+          createdAt: admin.firestore.Timestamp.fromDate(new Date()),
+          isActive: false,
+          userType: 'regular',
+        });
       // Here you can handle the incoming data, such as saving it to a database
 
       // Send a response

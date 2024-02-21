@@ -1,4 +1,4 @@
-import { useToast } from '@chakra-ui/react';
+import { Box, useToast } from '@chakra-ui/react';
 
 import { useAuthContext } from '@/firebase/auth-context';
 
@@ -15,14 +15,16 @@ const Base = () => {
   const toast = useToast();
 
   const handleClick = () => {
+    console.log('hi');
     toast({
       title: 'Not Verfied Yet',
       description:
         'Please wait for the admin to verify you & add you to a group first, then you can start using it.',
       status: 'warning',
-      duration: 3000,
+      duration: 9000,
       isClosable: true,
     });
+    return true;
   };
 
   return (
@@ -56,9 +58,9 @@ const Base = () => {
                   </a>
                 ) : (
                   // eslint-disable-next-line @next/next/no-html-link-for-pages
-                  <Button xl onClick={handleClick}>
-                    Dashboard
-                  </Button>
+                  <Box onClick={handleClick} cursor={'pointer'}>
+                    <Button xl>Dashboard</Button>
+                  </Box>
                 )
               ) : (
                 // eslint-disable-next-line @next/next/no-html-link-for-pages

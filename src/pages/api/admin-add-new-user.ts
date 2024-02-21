@@ -29,24 +29,28 @@ export default async function handler(
   if (req.method === 'POST') {
     try {
       // Parse the incoming JSON data
-      const { user, token, groupInfo, groupID } = req.body;
+      const { user, token, groupID } = req.body;
 
-      const userInfo = await verifyIdToken(token.toString());
+      const adminInfo = await verifyIdToken(token.toString());
       const adminSnapshot = await db
         .collection('users')
-        .where('uid', '==', userInfo.uid)
+        .where('uid', '==', adminInfo.uid)
         .get();
       // @ts-expect-error
       const adminDoc = adminSnapshot.docs[0].data();
       // Ensure the token's email matches the provided email
+      // eslint-disable-next-line eqeqeq
       if (adminDoc.userType != 'ultimate-admin') {
         res.status(401).json({ message: 'UnAuthorized' });
       }
-      await db.collection('users').doc(user.uid).update({
-        isActive: true,
-        groupInfo,
-        groupID,
-      });
+
+      await db.collection('users').doc(user.uid).set(
+        {
+          isActive: true,
+          groupID,
+        },
+        { merge: true },
+      );
       // Here you can handle the incoming data, such as saving it to a database
 
       // Send a response

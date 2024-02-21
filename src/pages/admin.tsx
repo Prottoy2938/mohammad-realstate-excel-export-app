@@ -1,4 +1,4 @@
-import { Box, Box, Button, useToast } from '@chakra-ui/react';
+import { Box, Button, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import { getAuth, getIdToken } from 'firebase/auth';
 import { useRouter } from 'next/router';
@@ -33,8 +33,7 @@ const Index = () => {
       await axios
         .post('/api/admin-get-new-users', { token })
         .then((res) => {
-          setAllGroups(res.data.allData);
-          console.log(res.data);
+          setNewUsers(res.data.allData);
         })
         .catch((e) => {
           console.log(e);
@@ -47,8 +46,7 @@ const Index = () => {
       await axios
         .post('/api/admin-get-all-groups', { token })
         .then((res) => {
-          setNewUsers(res.data.allData);
-          console.log(res.data);
+          setAllGroups(res.data.allData);
         })
         .catch((e) => {
           console.log(e);
@@ -63,16 +61,18 @@ const Index = () => {
     <>
       <Hero />
       {user.userType == 'ultimate-admin' && (
-                          // eslint-disable-next-line @next/next/no-html-link-for-pages
+        // eslint-disable-next-line @next/next/no-html-link-for-pages
         <a href="/admin/create-new-group">
           <Button size="lg" colorScheme="blue" px={20} variant="outline">
             Create a New Group
           </Button>
         </a>
       )}
-      <Box mb={'10vh'} mt={20}>
-        <NewUsersTable allGroups={allGroups} newUsers={newUsers}/>
-      </Box>
+      {allGroups && newUsers && (
+        <Box mb={'10vh'} mt={20}>
+          <NewUsersTable allGroups={allGroups} newUsers={newUsers} />
+        </Box>
+      )}
 
       <Footer />
     </>
