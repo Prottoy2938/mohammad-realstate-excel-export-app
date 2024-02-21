@@ -54,6 +54,7 @@ export default async function handler(
           createdByUID: userInfo.uid,
           createdAt: admin.firestore.Timestamp.fromDate(new Date()),
           active: true,
+          totalUsers: 0,
         });
       // Here you can handle the incoming data, such as saving it to a database
 

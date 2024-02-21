@@ -44,6 +44,12 @@ export default async function handler(
         res.status(401).json({ message: 'UnAuthorized' });
       }
       const groupInfo = await db.collection('groups').doc(groupID).get();
+      await db
+        .collection('groups')
+        .doc(groupID)
+        .update({
+          totalUsers: admin.firestore.FieldValue.increment(1),
+        });
       await db.collection('users').doc(user.uid).set(
         {
           isActive: true,
