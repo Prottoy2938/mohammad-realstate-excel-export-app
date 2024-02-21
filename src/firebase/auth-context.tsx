@@ -76,7 +76,7 @@ export function AuthContextProvider({
             size="xl"
             pos="fixed"
             top={'45vh'}
-            left={'40vh'}
+            left={'48vw'}
           />
         </Box>
       ) : (

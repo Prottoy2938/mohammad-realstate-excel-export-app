@@ -148,7 +148,7 @@ const Signup = () => {
                 isLoading={loading}
                 spinnerPlacement="end"
               >
-                Registesr
+                Register
               </Button>
             </form>
           </Box>

@@ -29,29 +29,20 @@ export default async function handler(
   if (req.method === 'POST') {
     try {
       // Parse the incoming JSON data
-      const { fullName, email, token } = req.body;
+      const { token } = req.body;
       const userInfo = await verifyIdToken(token.toString());
       // Get data from the request body
 
-      // Ensure the token's email matches the provided email
-      if (userInfo.email !== email) {
-        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-          status: 401,
-        });
-      }
+      const querySnapshot2 = await db
+        .collection('users')
+        .where('uid', '==', userInfo.uid)
+        .get();
 
-      await db.collection('users').add({
-        fullName,
-        email,
-        uid: userInfo.uid,
-        createdAt: admin.firestore.Timestamp.fromDate(new Date()),
-        isActive: false,
-        userType: 'regular',
-      });
-      // Here you can handle the incoming data, such as saving it to a database
+      // @ts-expect-error
+      const document = querySnapshot2.docs[0].data();
 
       // Send a response
-      res.status(200).json({ message: 'success' });
+      res.status(200).json({ userData: document });
     } catch (error) {
       console.log(error);
       // Handle errors
