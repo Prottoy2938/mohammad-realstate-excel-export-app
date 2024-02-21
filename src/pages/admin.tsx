@@ -1,4 +1,4 @@
-import { Box, Button } from '@chakra-ui/react';
+import { Box, Button, Heading } from '@chakra-ui/react';
 import axios from 'axios';
 import { getAuth, getIdToken } from 'firebase/auth';
 import { useRouter } from 'next/router';
@@ -59,20 +59,30 @@ const Index = () => {
   return (
     <>
       <Hero />
-      {user.userType == 'ultimate-admin' && (
-        // eslint-disable-next-line @next/next/no-html-link-for-pages
-        <a href="/admin/create-new-group">
-          <Button size="lg" colorScheme="blue" px={20} variant="outline">
-            Create a New Group
-          </Button>
-        </a>
-      )}
-      {allGroups && newUsers && (
-        <Box mb={'10vh'} mt={20}>
-          <NewUsersTable allGroups={allGroups} newUsers={newUsers} />
-        </Box>
-      )}
-
+      <Box mb={'60vh'}>
+        {user.userType == 'ultimate-admin' && (
+          // eslint-disable-next-line @next/next/no-html-link-for-pages
+          <a href="/admin/create-new-group">
+            <Button ml={10} mt={10} colorScheme="blue" px={10}>
+              Create a New Group
+            </Button>
+          </a>
+        )}
+        {allGroups && newUsers && (
+          <Box mb={'10vh'} mt={20}>
+            <Heading
+              fontSize={'3xl'}
+              m="0 auto"
+              mb={10}
+              mt={10}
+              textAlign={'center'}
+            >
+              New User Awaiting Verification
+            </Heading>
+            <NewUsersTable allGroups={allGroups} newUsers={newUsers} />
+          </Box>
+        )}
+      </Box>
       <Footer />
     </>
   );
