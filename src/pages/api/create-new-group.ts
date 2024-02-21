@@ -31,6 +31,8 @@ export default async function handler(
     try {
       // Parse the incoming JSON data
       const { groupName, token } = req.body;
+      console.log(groupName);
+
       const userInfo = await verifyIdToken(token.toString());
       const adminSnapshot = await db
         .collection('users')
@@ -38,9 +40,8 @@ export default async function handler(
         .get();
       // @ts-expect-error
       const adminDoc = adminSnapshot.docs[0].data();
-
       // Ensure the token's email matches the provided email
-      if (adminDoc.userType == 'ultimate-admin') {
+      if (adminDoc.userType != 'ultimate-admin') {
         res.status(401).json({ message: 'UnAuthorized' });
       }
       const groupID = uuidv4();
@@ -53,7 +54,7 @@ export default async function handler(
       // Here you can handle the incoming data, such as saving it to a database
 
       // Send a response
-      res.status(200).json({ userData: document });
+      res.status(200).json({ message: 'success' });
     } catch (error) {
       console.log(error);
       // Handle errors

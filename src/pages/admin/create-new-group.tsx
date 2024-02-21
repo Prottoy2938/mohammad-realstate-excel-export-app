@@ -48,7 +48,7 @@ const Index = () => {
     const token = await getIdToken(auth.currentUser);
 
     await axios
-      .post('/api/admin/create-new-group', {
+      .post('/api/create-new-group', {
         groupName,
         token,
       })
@@ -58,7 +58,7 @@ const Index = () => {
         toast({
           title: 'Success',
           description: 'Group Created Successfully',
-          status: 'error',
+          status: 'success',
           duration: 9000,
           isClosable: true,
         });
