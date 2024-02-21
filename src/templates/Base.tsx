@@ -1,3 +1,5 @@
+import { useToast } from '@chakra-ui/react';
+
 import { useAuthContext } from '@/firebase/auth-context';
 
 import { Button } from '../button/Button';
@@ -10,6 +12,18 @@ import { Hero } from './Hero';
 
 const Base = () => {
   const { user } = useAuthContext() as { user: any }; // Use 'as' to assert the type as { user: any }
+  const toast = useToast();
+
+  const handleClick = () => {
+    toast({
+      title: 'Not Verfied Yet',
+      description:
+        'Please wait for the admin to verify you & add you to a group first, then you can start using it.',
+      status: 'warning',
+      duration: 3000,
+      isClosable: true,
+    });
+  };
 
   return (
     <div className="text-gray-600 antialiased">
@@ -33,11 +47,21 @@ const Base = () => {
             }
             description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
             button={
+              // eslint-disable-next-line no-nested-ternary
               user ? (
-                <a href="/dashboard">
-                  <Button xl>Dashboard</Button>
-                </a>
+                user.isActive ? (
+                  // eslint-disable-next-line @next/next/no-html-link-for-pages
+                  <a href="/dashboard">
+                    <Button xl>Dashboard</Button>
+                  </a>
+                ) : (
+                  // eslint-disable-next-line @next/next/no-html-link-for-pages
+                  <Button xl onClick={handleClick}>
+                    Dashboard
+                  </Button>
+                )
               ) : (
+                // eslint-disable-next-line @next/next/no-html-link-for-pages
                 <a href="/signin">
                   <Button xl>Get Started</Button>
                 </a>
