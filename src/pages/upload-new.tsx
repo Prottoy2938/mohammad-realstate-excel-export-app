@@ -1,4 +1,11 @@
-import { Box, Button, Heading, Input, Spinner } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Heading,
+  Input,
+  Spinner,
+  useToast,
+} from '@chakra-ui/react';
 import axios from 'axios';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useRouter } from 'next/router';
@@ -16,6 +23,7 @@ const Index = () => {
   const [loading, setLoading] = useState(false);
   const { user } = useAuthContext() as { user: any }; // Use 'as' to assert the type as { user: any }
   const router = useRouter();
+  const toast = useToast();
 
   useEffect(() => {
     console.log(user);
@@ -37,7 +45,7 @@ const Index = () => {
       alert('Please select a file');
       return;
     }
-    setLoading(false);
+    setLoading(true);
     const storage = getStorage(firebase_app);
     // @ts-expect-error
     const storageRef = ref(storage, file.name);
@@ -55,10 +63,24 @@ const Index = () => {
       // @ts-expect-error
       setImageUrl(url);
       console.log('Upload response:', response.data);
-      setLoading(true);
+      setLoading(false);
+      toast({
+        title: 'Success',
+        description: 'User added successfully.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (error) {
       console.error('Error uploading file:', error);
-      setLoading(true);
+      setLoading(false);
+      toast({
+        title: 'Error',
+        description: 'An error occurred while adding the user.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
