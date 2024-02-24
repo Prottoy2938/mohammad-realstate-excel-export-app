@@ -22,6 +22,16 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
+function extractFullString(array) {
+  let fullString = '';
+  for (const obj of array) {
+    if (obj.message && obj.message.content) {
+      fullString += obj.message.content;
+    }
+  }
+  return fullString;
+}
+
 // eslint-disable-next-line consistent-return
 export default async function handler(
   req: NextApiRequest,
@@ -44,14 +54,15 @@ export default async function handler(
               {
                 type: 'image_url',
                 image_url: {
-                  url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg',
+                  url: imageUrl,
                 },
               },
             ],
           },
         ],
       });
-      console.log(response.choices);
+      console.log(extractFullString(response.choices)); // Output: "Hello world! This is a test."
+
       const docID = uuidv4();
 
       await db
@@ -61,7 +72,7 @@ export default async function handler(
           docId: docID,
           groupID,
           imageUrl,
-          userUID,
+          createdByUser: userUID,
           userInfo,
           createdAt: admin.firestore.Timestamp.fromDate(new Date()),
         });

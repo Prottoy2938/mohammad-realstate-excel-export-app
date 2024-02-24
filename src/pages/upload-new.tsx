@@ -1,4 +1,4 @@
-import { Button, Heading, Input } from '@chakra-ui/react';
+import { Box, Button, Heading, Input, Spinner } from '@chakra-ui/react';
 import axios from 'axios';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useRouter } from 'next/router';
@@ -13,6 +13,7 @@ import { Hero } from '../templates/Hero';
 const Index = () => {
   const [file, setFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { user } = useAuthContext() as { user: any }; // Use 'as' to assert the type as { user: any }
   const router = useRouter();
 
@@ -36,7 +37,7 @@ const Index = () => {
       alert('Please select a file');
       return;
     }
-
+    setLoading(false);
     const storage = getStorage(firebase_app);
     // @ts-expect-error
     const storageRef = ref(storage, file.name);
@@ -54,8 +55,10 @@ const Index = () => {
       // @ts-expect-error
       setImageUrl(url);
       console.log('Upload response:', response.data);
+      setLoading(true);
     } catch (error) {
       console.error('Error uploading file:', error);
+      setLoading(true);
     }
   };
 
@@ -72,20 +75,35 @@ const Index = () => {
       >
         Upload New File
       </Heading>
-      <div>
-        <Input type="file" onChange={handleFileChange} mb={4} />
-        <Button colorScheme="blue" onClick={handleUpload}>
-          Upload
-        </Button>
-        {imageUrl && (
-          <div>
-            <Heading as="h2" size="lg" mt={4} mb={2}>
-              Uploaded Image
-            </Heading>
-            <img src={imageUrl} alt="Uploaded" style={{ maxWidth: '100%' }} />
-          </div>
-        )}
-      </div>
+      {loading ? (
+        <Box>
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="blue.500"
+            size="xl"
+            pos="fixed"
+            top={'45vh'}
+            left={'48vw'}
+          />
+        </Box>
+      ) : (
+        <div>
+          <Input type="file" onChange={handleFileChange} mb={4} />
+          <Button colorScheme="blue" onClick={handleUpload}>
+            Upload
+          </Button>
+          {imageUrl && (
+            <div>
+              <Heading as="h2" size="lg" mt={4} mb={2}>
+                Uploaded Image
+              </Heading>
+              <img src={imageUrl} alt="Uploaded" style={{ maxWidth: '100%' }} />
+            </div>
+          )}
+        </div>
+      )}
       <Footer />
     </>
   );
