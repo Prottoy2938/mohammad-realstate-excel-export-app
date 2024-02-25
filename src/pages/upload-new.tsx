@@ -179,7 +179,7 @@ const Index = () => {
         <Box mb={30} p={20}>
           <Input type="file" onChange={handleFileChange} mb={10} />
           <Button colorScheme="blue" onClick={handleUpload}>
-            Upload
+            Upload & Transcribe
           </Button>
 
           {excelString.length ? (
