@@ -32,14 +32,24 @@ function extractFullString(array) {
   }
   return fullString;
 }
-
-function extractExcelString(input) {
+function extractAndConvertToArray(input: any) {
   const regex = /```([\s\S]*)```/;
   const match = input.match(regex);
   if (match && match.length > 1) {
-    return match[1].trim();
+    const extractedString = match[1].trim();
+    try {
+      const arrayData = JSON.parse(extractedString);
+      if (Array.isArray(arrayData)) {
+        return arrayData;
+      }
+      return [];
+    } catch (error) {
+      console.error('Error parsing extracted string:', error);
+      return [];
+    }
+  } else {
+    return [];
   }
-  return '';
 }
 
 // eslint-disable-next-line consistent-return
@@ -52,7 +62,7 @@ export default async function handler(
       // Parse the incoming JSON data
       const { groupID, imageUrl, userUID, userInfo } = req.body;
       const openai = new OpenAI({
-        apiKey: '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',
+        apiKey: process.env.OPENAI_API_KEY,
       });
       const response = await openai.chat.completions.create({
         model: 'gpt-4-vision-preview',
@@ -82,7 +92,7 @@ export default async function handler(
         ],
       });
 
-      const excelString = extractExcelString(
+      const excelString = extractAndConvertToArray(
         extractFullString(response.choices),
       );
 
@@ -104,7 +114,7 @@ export default async function handler(
       // Here you can handle the incoming data, such as saving it to a database
 
       // Send a response
-      res.status(200).json({ message: 'success' });
+      res.status(200).json({ excelString });
     } catch (error) {
       console.log(error);
       // Handle errors

@@ -10,6 +10,7 @@ import axios from 'axios';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { useAuthContext } from '@/firebase/auth-context';
 
@@ -19,6 +20,8 @@ import { Hero } from '../templates/Hero';
 
 const Index = () => {
   const [file, setFile] = useState(null);
+  const [excelString, setExcelString] = useState('');
+
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const { user } = useAuthContext() as { user: any }; // Use 'as' to assert the type as { user: any }
@@ -34,6 +37,75 @@ const Index = () => {
       router.push('/');
     }
   }, []);
+
+  // @ts-expect-error
+  function exportToCsv(filename, rows) {
+    // @ts-expect-error
+    const processRow = function (row) {
+      let finalVal = '';
+      for (let j = 0; j < row.length; j++) {
+        let innerValue = row[j] === null ? '' : row[j].toString();
+        if (row[j] instanceof Date) {
+          innerValue = row[j].toLocaleString();
+        }
+        let result = innerValue.replace(/"/g, '""');
+        if (result.search(/("|,|\n)/g) >= 0) result = `"${result}"`;
+        if (j > 0) finalVal += ',';
+        finalVal += result;
+      }
+      return `${finalVal}\n`;
+    };
+
+    let csvFile = '';
+    for (let i = 0; i < rows.length; i++) {
+      csvFile += processRow(rows[i]);
+    }
+
+    const blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+    // @ts-expect-error
+    if (navigator.msSaveBlob) {
+      // IE 10+
+      // @ts-expect-error
+      navigator.msSaveBlob(blob, filename);
+    } else {
+      const link = document.createElement('a');
+      if (link.download !== undefined) {
+        // feature detection
+        // Browsers that support HTML5 download attribute
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+  }
+
+  const handleDownloadCSVFile = () => {
+    const headingOrder = [
+      'boostedLinkId',
+      'createdAt',
+      'email',
+      'name',
+      'providerId',
+    ];
+    console.log(excelString.map(Object.values));
+
+    const excelData = excelString.map((obj: any) =>
+      headingOrder.map((key: any) => {
+        if (key == 'createdAt') {
+          return new Date(
+            obj[key].seconds * 1000 + obj[key].nanoseconds / 1e6,
+          ).toLocaleDateString();
+        }
+        return obj[key];
+      }),
+    );
+    console.log(excelData);
+    exportToCsv(`${uuidv4()}.csv`, [headingOrder, ...excelData]);
+  };
 
   // @ts-expect-error
   const handleFileChange = (e) => {
@@ -117,6 +189,21 @@ const Index = () => {
           <Button colorScheme="blue" onClick={handleUpload}>
             Upload
           </Button>
+
+          {excelString && (
+            <Button
+              style={{
+                margin: '0 auto',
+                marginTop: '30px',
+                marginBottom: '30px',
+                marginLeft: '45vw',
+              }}
+              onClick={handleDownloadCSVFile}
+            >
+              Download Data
+            </Button>
+          )}
+
           {imageUrl && (
             <div>
               <Heading as="h2" size="lg" mt={4} mb={2}>

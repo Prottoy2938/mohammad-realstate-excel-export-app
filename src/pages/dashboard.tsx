@@ -9,6 +9,7 @@ import { Hero } from '../templates/Hero';
 
 const Index = () => {
   const { user } = useAuthContext() as { user: any }; // Use 'as' to assert the type as { user: any }
+
   const router = useRouter();
   useEffect(() => {
     console.log(user);
