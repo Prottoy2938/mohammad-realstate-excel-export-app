@@ -183,6 +183,7 @@ const Index = () => {
 
           {excelString.length ? (
             <Button
+              colorScheme="green"
               style={{
                 margin: '0 auto',
                 marginTop: '30px',
