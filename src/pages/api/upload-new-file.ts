@@ -42,15 +42,25 @@ export default async function handler(
       // Parse the incoming JSON data
       const { groupID, imageUrl, userUID, userInfo } = req.body;
       const openai = new OpenAI({
-        apiKey: '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',
+        apiKey: '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',
       });
       const response = await openai.chat.completions.create({
         model: 'gpt-4-vision-preview',
+        max_tokens: 3500,
         messages: [
           {
             role: 'user',
             content: [
-              { type: 'text', text: 'What’s in this image?' },
+              {
+                type: 'text',
+                text: `Try to summarize whats in this image in a excel table form. Try to gather as much information as possible. My goal isto save the output string as an excel file. So only output in an array format similar to this: 
+              [
+                ["Name", "Age", "Gender", "City", "Phone"],
+                ["John", 30, "Male", "NYC", 123456],
+                ["Alice", 25, "Female", "LA", 789012]
+            ]
+              `,
+              },
               {
                 type: 'image_url',
                 image_url: {
