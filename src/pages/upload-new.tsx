@@ -20,7 +20,7 @@ import { Hero } from '../templates/Hero';
 
 const Index = () => {
   const [file, setFile] = useState(null);
-  const [excelString, setExcelString] = useState('');
+  const [excelString, setExcelString] = useState([]);
 
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -84,26 +84,7 @@ const Index = () => {
   }
 
   const handleDownloadCSVFile = () => {
-    const headingOrder = [
-      'boostedLinkId',
-      'createdAt',
-      'email',
-      'name',
-      'providerId',
-    ];
-
-    const excelData = excelString.map((obj: any) =>
-      headingOrder.map((key: any) => {
-        if (key == 'createdAt') {
-          return new Date(
-            obj[key].seconds * 1000 + obj[key].nanoseconds / 1e6,
-          ).toLocaleDateString();
-        }
-        return obj[key];
-      }),
-    );
-    console.log(excelData);
-    exportToCsv(`${uuidv4()}.csv`, [headingOrder, ...excelData]);
+    exportToCsv(`${uuidv4()}.csv`, excelString);
   };
 
   // @ts-expect-error
@@ -135,14 +116,26 @@ const Index = () => {
       // @ts-expect-error
       setImageUrl(url);
       console.log('Upload response:', response.data);
+      setExcelString(response.data.excelString);
       setLoading(false);
-      toast({
-        title: 'Success',
-        description: 'User added successfully.',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      });
+
+      if (response.data.excelString.length) {
+        alert('Hello');
+        toast({
+          title: 'Success',
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title:
+            "Couldn't transcribe document, something went wrong. Please try again",
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        });
+      }
     } catch (error) {
       console.error('Error uploading file:', error);
       setLoading(false);
@@ -189,7 +182,7 @@ const Index = () => {
             Upload
           </Button>
 
-          {excelString && (
+          {excelString.length ? (
             <Button
               style={{
                 margin: '0 auto',
@@ -201,6 +194,8 @@ const Index = () => {
             >
               Download Data
             </Button>
+          ) : (
+            ''
           )}
 
           {imageUrl && (

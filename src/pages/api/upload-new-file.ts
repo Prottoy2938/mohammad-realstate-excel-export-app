@@ -62,7 +62,9 @@ export default async function handler(
       // Parse the incoming JSON data
       const { groupID, imageUrl, userUID, userInfo } = req.body;
       const openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
+        apiKey: process.env.OPENAI_API_KEY
+          ? process.env.OPENAI_API_KEY
+          : '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',
       });
       const response = await openai.chat.completions.create({
         model: 'gpt-4-vision-preview',
@@ -73,7 +75,7 @@ export default async function handler(
             content: [
               {
                 type: 'text',
-                text: `Try to summarize whats in this image in a excel table form. Try to gather as much information as possible. My goal isto save the output string as an excel file. So only output in an array format similar to this: 
+                text: `Try to summarize whats in this image in a excel table form. Try to gather as much information as possible. My goal isto save the output string as an excel file. So only, only output in an array format similar to this: 
               [
                 ["Name", "Age", "Gender", "City", "Phone"],
                 ["John", 30, "Male", "NYC", 123456],
@@ -96,7 +98,11 @@ export default async function handler(
         extractFullString(response.choices),
       );
 
-      console.log(excelString); // Output: "Hello world! This is a test."
+      console.log(
+        excelString,
+        extractFullString(response.choices),
+        response.choices,
+      ); // Output: "Hello world! This is a test."
 
       const docID = uuidv4();
 
