@@ -22,6 +22,7 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
+// @ts-expect-error
 function extractFullString(array) {
   let fullString = '';
   for (const obj of array) {
@@ -30,6 +31,15 @@ function extractFullString(array) {
     }
   }
   return fullString;
+}
+
+function extractExcelString(input) {
+  const regex = /```([\s\S]*)```/;
+  const match = input.match(regex);
+  if (match && match.length > 1) {
+    return match[1].trim();
+  }
+  return '';
 }
 
 // eslint-disable-next-line consistent-return
@@ -42,7 +52,7 @@ export default async function handler(
       // Parse the incoming JSON data
       const { groupID, imageUrl, userUID, userInfo } = req.body;
       const openai = new OpenAI({
-        apiKey: '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',
+        apiKey: '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',
       });
       const response = await openai.chat.completions.create({
         model: 'gpt-4-vision-preview',
@@ -71,7 +81,12 @@ export default async function handler(
           },
         ],
       });
-      console.log(extractFullString(response.choices)); // Output: "Hello world! This is a test."
+
+      const excelString = extractExcelString(
+        extractFullString(response.choices),
+      );
+
+      console.log(excelString); // Output: "Hello world! This is a test."
 
       const docID = uuidv4();
 

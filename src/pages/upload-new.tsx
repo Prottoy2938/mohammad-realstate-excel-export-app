@@ -35,6 +35,7 @@ const Index = () => {
     }
   }, []);
 
+  // @ts-expect-error
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
