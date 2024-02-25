@@ -52,7 +52,7 @@ function extractAndConvertToArray(input: any) {
   }
 }
 
-async function getExcelStringFromGPT(imageUrl) {
+async function getExcelStringFromGPT(imageUrl: any) {
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
       ? process.env.OPENAI_API_KEY
