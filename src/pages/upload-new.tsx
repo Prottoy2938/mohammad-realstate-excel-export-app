@@ -120,7 +120,6 @@ const Index = () => {
       setLoading(false);
 
       if (response.data.excelString.length) {
-        alert('Hello');
         toast({
           title: 'Success',
           status: 'success',
