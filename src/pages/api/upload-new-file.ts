@@ -131,7 +131,7 @@ export default async function handler(
         .set({
           docId: docID,
           groupID,
-          excelString,
+          excelString: JSON.stringify(excelString),
           imageUrl,
           createdByUser: userUID,
           userInfo,
