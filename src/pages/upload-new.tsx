@@ -192,7 +192,7 @@ const Index = () => {
               }}
               onClick={handleDownloadCSVFile}
             >
-              Download Data
+              Download Transcribed Data
             </Button>
           ) : (
             ''
