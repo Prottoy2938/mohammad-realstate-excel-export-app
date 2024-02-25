@@ -42,7 +42,7 @@ export default async function handler(
       // Parse the incoming JSON data
       const { groupID, imageUrl, userUID, userInfo } = req.body;
       const openai = new OpenAI({
-        apiKey: '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',
+        apiKey: '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',
       });
       const response = await openai.chat.completions.create({
         model: 'gpt-4-vision-preview',
