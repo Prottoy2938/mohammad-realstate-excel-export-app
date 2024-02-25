@@ -75,13 +75,7 @@ export default async function handler(
             content: [
               {
                 type: 'text',
-                text: `Try to summarize whats in this image in a excel table form. Try to gather as much information as possible. My goal isto save the output string as an excel file. So only, only output in an array format similar to this: 
-              [
-                ["Name", "Age", "Gender", "City", "Phone"],
-                ["John", 30, "Male", "NYC", 123456],
-                ["Alice", 25, "Female", "LA", 789012]
-            ]
-              `,
+                text: `Try to summarize whats in this image in a excel table form. Try to gather as much information as possible. My goal is to gather all the data in an one dimentional array. Put the array inside 3 backticks. No Linebreaks`,
               },
               {
                 type: 'image_url',
