@@ -91,7 +91,6 @@ const Index = () => {
       'name',
       'providerId',
     ];
-    console.log(excelString.map(Object.values));
 
     const excelData = excelString.map((obj: any) =>
       headingOrder.map((key: any) => {
