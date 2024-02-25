@@ -175,8 +175,8 @@ const Index = () => {
           />
         </Box>
       ) : (
-        <div>
-          <Input type="file" onChange={handleFileChange} mb={4} />
+        <Box mb={30} p={20}>
+          <Input type="file" onChange={handleFileChange} mb={10} />
           <Button colorScheme="blue" onClick={handleUpload}>
             Upload
           </Button>
@@ -206,7 +206,7 @@ const Index = () => {
               <img src={imageUrl} alt="Uploaded" style={{ maxWidth: '100%' }} />
             </div>
           )}
-        </div>
+        </Box>
       )}
       <Footer />
     </>

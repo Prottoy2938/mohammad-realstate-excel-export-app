@@ -53,46 +53,50 @@ function extractAndConvertToArray(input: any) {
 }
 
 async function getExcelStringFromGPT(imageUrl: any) {
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-      ? process.env.OPENAI_API_KEY
-      : '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',
-  });
+  try {
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
+        ? process.env.OPENAI_API_KEY
+        : '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',
+    });
 
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4-vision-preview',
-    max_tokens: 3500,
-    messages: [
-      {
-        role: 'user',
-        content: [
-          {
-            type: 'text',
-            text: `Try to summarize whats in this image in a excel table form. Try to gather as much information as possible. My goal isto save the output string as an excel file. So only output in an array format similar to this: 
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4-vision-preview',
+      max_tokens: 3500,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: `Try to summarize whats in this image in a excel table form. Try to gather as much information as possible. My goal isto save the output string as an excel file. So only output in an array format similar to this: 
             [
               ["Name", "Age", "Gender", "City", "Phone"],
               ["John", 30, "Male", "NYC", 123456],
               ["Alice", 25, "Female", "LA", 789012]
           ]
            `,
-          },
-          {
-            type: 'image_url',
-            image_url: {
-              url: imageUrl,
             },
-          },
-        ],
-      },
-    ],
-  });
-  const excelString = extractAndConvertToArray(
-    extractFullString(response.choices)
-      .replace(/\n/g, '')
-      .replace(/plaintext\n/g, ''),
-  );
+            {
+              type: 'image_url',
+              image_url: {
+                url: imageUrl,
+              },
+            },
+          ],
+        },
+      ],
+    });
+    const excelString = extractAndConvertToArray(
+      extractFullString(response.choices)
+        .replace(/\n/g, '')
+        .replace(/plaintext\n/g, ''),
+    );
 
-  return excelString;
+    return excelString;
+  } catch (e) {
+    return [];
+  }
 }
 
 // eslint-disable-next-line consistent-return
