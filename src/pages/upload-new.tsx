@@ -127,13 +127,13 @@ const Index = () => {
           isClosable: true,
         });
       } else {
-        toast({
-          title:
-            "Couldn't transcribe document, something went wrong. Please try again",
-          status: 'error',
-          duration: 9000,
-          isClosable: true,
-        });
+        // toast({
+        //   title:
+        //     "Couldn't transcribe document, something went wrong. Please try again",
+        //   status: 'error',
+        //   duration: 9000,
+        //   isClosable: true,
+        // });
       }
     } catch (error) {
       console.error('Error uploading file:', error);
