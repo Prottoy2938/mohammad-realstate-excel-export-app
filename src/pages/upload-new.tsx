@@ -107,7 +107,7 @@ const Index = () => {
       await uploadBytes(storageRef, file);
       const url = await getDownloadURL(storageRef);
       console.log(url);
-      const response = await axios.post('/api/upload-new-file', {
+      const response = await axios.post('https://uploadnewfiletwo-f52ulgomha-uc.a.run.app', {
         imageUrl: url,
         groupID: user.groupID,
         userUID: user.uid,

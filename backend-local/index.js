@@ -1,15 +1,14 @@
-// pages/api/addHealthcareWorker.ts
-
-import admin from 'firebase-admin';
-// pages/api/submitForm.ts
-import type { NextApiRequest, NextApiResponse } from 'next';
-import OpenAI from 'openai';
-import { v4 as uuidv4 } from 'uuid';
+const express = require('express');
+const admin = require('firebase-admin');
+const { v4: uuidv4 } = require('uuid');
+const OpenAI = require('openai');
+const bodyParser = require('body-parser');
+const cors = require('cors'); // Import the cors package
 
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert({
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+      projectId: 'realestate-project-d2fb8',
       clientEmail: 'firebase-adminsdk-48lrx@realestate-project-d2fb8.iam.gserviceaccount.com',
       // https://stackoverflow.com/a/41044630/1332513
       privateKey:
@@ -19,9 +18,12 @@ if (!admin.apps.length) {
   });
 }
 
-const db = admin.firestore();
 
-// @ts-expect-error
+const db = admin.firestore();
+const app = express();
+app.use(bodyParser.json());
+app.use(cors()); // Use the cors middleware
+
 function extractFullString(array) {
   let fullString = '';
   for (const obj of array) {
@@ -31,7 +33,8 @@ function extractFullString(array) {
   }
   return fullString;
 }
-function extractAndConvertToArray(input: any) {
+
+function extractAndConvertToArray(input) {
   const regex = /```([\s\S]*)```/;
   const match = input.match(regex);
   if (match && match.length > 1) {
@@ -51,12 +54,10 @@ function extractAndConvertToArray(input: any) {
   }
 }
 
-async function getExcelStringFromGPT(imageUrl: any) {
+async function getExcelStringFromGPT(imageUrl) {
   try {
     const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
-        ? process.env.OPENAI_API_KEY
-        : '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',
+      apiKey: '',
     });
 
     const response = await openai.chat.completions.create({
@@ -68,7 +69,7 @@ async function getExcelStringFromGPT(imageUrl: any) {
           content: [
             {
               type: 'text',
-              text: `Try to summarize whats in this image in a excel table form. Try to gather as much information as possible. My goal isto save the output string as an excel file. So only output in an array format similar to this: 
+              text: `Try to summarize what's in this image in an excel table form. Try to gather as much information as possible. My goal is to save the output string as an excel file. So only output in an array format similar to this: 
             [
               ["Name", "Age", "Gender", "City", "Phone"],
               ["John", 30, "Male", "NYC", 123456],
@@ -89,65 +90,59 @@ async function getExcelStringFromGPT(imageUrl: any) {
     const excelString = extractAndConvertToArray(
       extractFullString(response.choices)
         .replace(/\n/g, '')
-        .replace(/plaintext\n/g, ''),
+        .replace(/plaintext\n/g, '')
     );
 
     return excelString;
   } catch (e) {
+    console.error('Error fetching data from GPT:', e);
     return [];
   }
 }
 
-// eslint-disable-next-line consistent-return
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
-  if (req.method === 'POST') {
-    try {
-      // Parse the incoming JSON data
-      const { groupID, imageUrl, userUID, userInfo } = req.body;
-      let excelString = await getExcelStringFromGPT(imageUrl);
-console.log("RUNNIGN HERE")
-      while (!excelString.length) {
-        console.log('true');
-        // eslint-disable-next-line no-await-in-loop
-        excelString = await getExcelStringFromGPT(imageUrl);
-      }
-      // console.log(
-      //   excelString,
-      //   extractFullString(response.choices)
-      //     .replace(/\n/g, '')
-      //     .replace(/plaintext\n/g, ''),
-      //   // response.choices,
-      // ); // Output: "Hello world! This is a test."
+app.post('/uploadNewFileTwo', async (req, res) => {
+  try {
+    console.log('runnign here')
+    const { groupID, imageUrl, userUID, userInfo } = req.body;
+    let excelString = await getExcelStringFromGPT(imageUrl);
 
-      const docID = uuidv4();
-
-      await db
-        .collection('files')
-        .doc(docID)
-        .set({
-          docId: docID,
-          groupID,
-          excelString: JSON.stringify(excelString),
-          imageUrl,
-          createdByUser: userUID,
-          userInfo,
-          createdAt: admin.firestore.Timestamp.fromDate(new Date()),
-        });
-      // Here you can handle the incoming data, such as saving it to a database
-
-      // Send a response
-      res.status(200).json({ excelString });
-    } catch (error) {
-      console.log(error);
-      // Handle errors
-      res.status(500).json({ message: 'Internal server error' });
+    while (!excelString.length) {
+      console.log('Retrying GPT request...');
+      excelString = await getExcelStringFromGPT(imageUrl);
     }
-  } else {
-    // Method not allowed
-    res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+
+    const docID = uuidv4();
+
+    await db.collection('files').doc(docID).set({
+      docId: docID,
+      groupID,
+      excelString: JSON.stringify(excelString),
+      imageUrl,
+      createdByUser: userUID,
+      userInfo,
+      createdAt: admin.firestore.Timestamp.fromDate(new Date()),
+    });
+
+    res.status(200).json({ excelString });
+  } catch (error) {
+    console.error('Error processing request:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
-}
+});
+
+// GET request handler for the homepage
+app.get('/', (req, res) => {
+  res.send('Welcome to the homepage!');
+});
+
+// GET request handler for the homepage
+app.get('/uploadNewFileTwo', (req, res) => {
+  
+  res.send('Welcome to the homepag de!');
+});
+
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
