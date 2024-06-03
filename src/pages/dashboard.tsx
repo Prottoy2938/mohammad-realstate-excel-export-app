@@ -1,7 +1,7 @@
 import { Box, Button, Center, Heading, VStack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-
+import { Search } from "../search/Search"
 import { useAuthContext } from '@/firebase/auth-context';
 
 import { Footer } from '../templates/Footer';
@@ -27,6 +27,7 @@ const Index = () => {
       <Heading margin="0 auto" mt={'10vh'} textAlign={'center'} display="table">
         Dashboard
       </Heading>
+      <Search />
       <Center h="100vh">
         <Box
           p={20}
