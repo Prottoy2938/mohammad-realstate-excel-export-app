@@ -9,7 +9,12 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { addDoc, collection, getFirestore } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  getFirestore,
+  serverTimestamp,
+} from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -18,6 +23,7 @@ import firebase_app from '../firebase/config';
 
 // Initialize Firebase
 const storage = getStorage(firebase_app);
+// @ts-expect-error
 const db = getFirestore(firebase_app);
 
 const CreateClient = () => {
@@ -30,30 +36,32 @@ const CreateClient = () => {
   const toast = useToast();
   const router = useRouter();
 
+  // @ts-expect-error
   const handleFileChange = (e, index) => {
     const newFiles = [...files];
+    // @ts-expect-error
+    // eslint-disable-next-line prefer-destructuring
     newFiles[index] = e.target.files[0];
     setFiles(newFiles);
   };
-
+  // @ts-expect-error
   const handleFileNameChange = (e, index) => {
     const newFileNames = [...fileNames];
+    // @ts-expect-error
     newFileNames[index] = e.target.value;
     setFileNames(newFileNames);
   };
 
-  const handleFileDetailChange = (e, index) => {
-    const newFileDetails = [...fileDetails];
-    newFileDetails[index] = e.target.value;
-    setFileDetails(newFileDetails);
-  };
-
   const addFileField = () => {
+    // @ts-expect-error
     setFiles([...files, null]);
+    // @ts-expect-error
     setFileNames([...fileNames, '']);
+    // @ts-expect-error
     setFileDetails([...fileDetails, '']);
   };
 
+  // @ts-expect-error
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -83,6 +91,9 @@ const CreateClient = () => {
         name: clientName,
         details: clientDetails,
         files: fileData,
+        checked: false,
+        createdAt: serverTimestamp(),
+        lastUpdatedAt: serverTimestamp(),
       });
 
       console.log('Document written with ID: ', docRef.id);
@@ -144,7 +155,13 @@ const CreateClient = () => {
                 onChange={(e) => handleFileNameChange(e, index)}
               />
             </FormControl>
-          giit  */}
+            {/* <FormControl id={`file-detail-${index}`} isRequired>
+              <FormLabel>File Detail</FormLabel>
+              <Input
+                value={fileDetails[index]}
+                onChange={(e) => handleFileDetailChange(e, index)}
+              />
+            </FormControl> */}
             <FormControl id={`file-${index}`} isRequired>
               <FormLabel>File</FormLabel>
               <Input type="file" onChange={(e) => handleFileChange(e, index)} />
