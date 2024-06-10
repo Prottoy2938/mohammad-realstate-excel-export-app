@@ -18,7 +18,9 @@ import {
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+
 import { useAuthContext } from '@/firebase/auth-context';
+
 import firebase_app from '../firebase/config';
 
 // Initialize Firebase
@@ -171,7 +173,9 @@ const CreateClient = () => {
             </FormControl>
           </Box>
         ))}
-        <Button onClick={addFileField}>Add Another File</Button>
+        <Button onClick={addFileField}>
+          {files.length ? 'Add Another File' : 'Add File'}
+        </Button>
         <Button colorScheme="teal" onClick={handleSubmit} isLoading={isLoading}>
           Create Client
         </Button>
