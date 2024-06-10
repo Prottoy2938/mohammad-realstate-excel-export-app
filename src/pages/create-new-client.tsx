@@ -114,7 +114,7 @@ const CreateClient = () => {
       });
 
       // Redirect or give feedback to the user
-      router.push('/');
+      // router.push('/');
     } catch (error) {
       console.error('Error uploading files or creating client: ', error);
 
