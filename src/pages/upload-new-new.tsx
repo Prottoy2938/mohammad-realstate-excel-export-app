@@ -18,7 +18,7 @@ import {
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-
+import { useAuthContext } from '@/firebase/auth-context';
 import firebase_app from '../firebase/config';
 
 // Initialize Firebase
@@ -35,6 +35,7 @@ const CreateClient = () => {
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
   const router = useRouter();
+  const { user } = useAuthContext() as { user: any }; // Use 'as' to assert the type as { user: any }
 
   // @ts-expect-error
   const handleFileChange = (e, index) => {
@@ -92,6 +93,8 @@ const CreateClient = () => {
         details: clientDetails,
         files: fileData,
         checked: false,
+        createdbyUserUID: user.uid,
+        createdByUserInfo: user,
         createdAt: serverTimestamp(),
         lastUpdatedAt: serverTimestamp(),
       });
