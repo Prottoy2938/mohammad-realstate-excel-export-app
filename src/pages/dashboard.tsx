@@ -1,9 +1,10 @@
 import { Box, Button, Center, Heading, VStack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { Search } from "../search/Search"
+
 import { useAuthContext } from '@/firebase/auth-context';
 
+import { Search } from '../search/Search';
 import { Footer } from '../templates/Footer';
 import { Hero } from '../templates/Hero';
 
@@ -38,9 +39,9 @@ const Index = () => {
           border={'1px dashed black'}
         >
           <VStack spacing={6}>
-            <a href="/upload-new">
+            <a href="/create-new-client">
               <Button size="lg" colorScheme="blue" px={20} variant="outline">
-                Upload New
+                Create New Client
               </Button>
             </a>
             <a href="/my-profile">
@@ -48,7 +49,7 @@ const Index = () => {
                 My Profile
               </Button>
             </a>
-            <a href="/files">
+            {/* <a href="/files">
               <Button size="lg" colorScheme="blue" px={20} variant="outline">
                 Files
               </Button>
@@ -57,7 +58,7 @@ const Index = () => {
               <Button size="lg" colorScheme="blue" px={20} variant="outline">
                 My Group
               </Button>
-            </a>
+            </a> */}
 
             {user && user.userType && user.userType.includes('admin') && (
               <a href="/admin">
