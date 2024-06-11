@@ -44,11 +44,17 @@ const Index = () => {
                 Create New Client
               </Button>
             </a>
+            <a href="/my-clients">
+              <Button size="lg" colorScheme="blue" px={20} variant="outline">
+                My Clients
+              </Button>
+            </a>
             <a href="/my-profile">
               <Button size="lg" colorScheme="blue" px={20} variant="outline">
                 My Profile
               </Button>
             </a>
+           
             {/* <a href="/files">
               <Button size="lg" colorScheme="blue" px={20} variant="outline">
                 Files
