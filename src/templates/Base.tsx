@@ -44,7 +44,7 @@ const Base = () => {
             title={
               <>
                 <span className="text-white">{'Streamline Real estate\n'}</span>
-                <span className="text-primary-500">Valuation</span>
+                <span className="text-primary-500">Construction</span>
               </>
             }
             description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."

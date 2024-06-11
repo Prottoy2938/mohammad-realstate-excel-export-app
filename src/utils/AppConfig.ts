@@ -1,6 +1,6 @@
 export const AppConfig = {
   site_name: 'SREV',
-  title: 'Streamline Real estate Valuation',
-  description: 'Streamline Real estate Valuation',
+  title: 'Scan2Crm',
+  description: 'Scan2Crm',
   locale: 'en',
 };
