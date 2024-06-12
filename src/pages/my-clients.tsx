@@ -116,7 +116,7 @@ const Clients = () => {
         >
           My Clients
         </Heading>
-        <Box>
+        <Box mb={'10vh'}>
           <Search />
 
           {/* <Line data={data} options={options} /> */}
