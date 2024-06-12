@@ -98,6 +98,7 @@ const CreateClient = () => {
         checked: false,
         createdbyUserUID: user.uid,
         createdByUserInfo: user,
+        id:  Math.random().toString(36).substring(2, 9),
         createdAt: serverTimestamp(),
         lastUpdatedAt: serverTimestamp(),
       });

@@ -66,13 +66,13 @@ const Index = () => {
               </Button>
             </a> */}
 
-            {user && user.userType && user.userType.includes('admin') && (
+            {/* {user && user.userType && user.userType.includes('admin') && (
               <a href="/admin">
                 <Button size="lg" colorScheme="red" px={20} variant="outline">
                   Admin
                 </Button>
               </a>
-            )}
+            )} */}
           </VStack>
         </Box>
       </Center>
