@@ -43,8 +43,8 @@ const Base = () => {
           <HeroOneButton
             title={
               <>
-                <span className="text-white">{'Streamline Real estate\n'}</span>
-                <span className="text-primary-500">Construction</span>
+                <span className="text-white">{'Scan2CRM\n'}</span>
+                {/* <span className="text-primary-500">Construction</span> */}
               </>
             }
             description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
