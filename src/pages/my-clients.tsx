@@ -52,7 +52,6 @@ const Clients = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      // @ts-expect-error
       setClients(clientsData);
       setLoading(false);
     };
@@ -66,14 +65,13 @@ const Clients = () => {
         label: 'Number of Files',
         data:
           clients.files && clients.files.length
-            ? clients.map((client) => client.files.length)
+            ? clients.map((client: any) => client.files.length)
             : [],
         borderColor: 'rgba(75, 192, 192, 1)',
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
       },
     ],
   };
-
   const options = {
     responsive: true,
     plugins: {
@@ -115,7 +113,7 @@ const Clients = () => {
               <Th>Name</Th>
               <Th>Details</Th>
               <Th>Total Files</Th>
-              <Th>View Files</Th>
+              <Th>View Details</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -135,7 +133,7 @@ const Clients = () => {
                     as="a"
                     href={`/client-files?id=${client.id}`}
                   >
-                    View Files
+                    View Details
                   </Button>
                 </Td>
               </Tr>
