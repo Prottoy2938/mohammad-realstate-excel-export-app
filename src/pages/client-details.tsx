@@ -78,11 +78,15 @@ const ClientDetails = () => {
         </Text>
         <Text>
           <strong>Created At:</strong>{' '}
-          {new Date(client.createdAt.seconds * 1000).toLocaleString()}
+          {client.createdAt
+            ? new Date(client.createdAt.seconds * 1000).toLocaleString()
+            : ''}
         </Text>
         <Text>
           <strong>Last Updated At:</strong>{' '}
-          {new Date(client.lastUpdatedAt.seconds * 1000).toLocaleString()}
+          {client.lastUpdatedAt
+            ? new Date(client.lastUpdatedAt.seconds * 1000).toLocaleString()
+            : ''}
         </Text>
         <Table variant="simple">
           <Thead>
