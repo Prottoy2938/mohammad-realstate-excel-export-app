@@ -17,6 +17,9 @@ import { useEffect, useState } from 'react';
 
 import firebase_app from '@/firebase/config';
 
+import { Footer } from '../templates/Footer';
+import { Hero } from '../templates/Hero';
+
 // @ts-expect-error
 const db = getFirestore(firebase_app);
 
@@ -65,56 +68,61 @@ const ClientDetails = () => {
   }
 
   return (
-    <Box p={8} m="0 auto" mt={10} mb={10}>
-      <VStack spacing={4} align="stretch">
-        <Heading as="h1" size="xl">
-          {client.name}
-        </Heading>
-        <Text>
-          <strong>Details:</strong> {client.details ? client.details : ''}
-        </Text>
-        <Text>
-          <strong>Created At:</strong>{' '}
-          {client.createdAt
-            ? new Date(client.createdAt.seconds * 1000).toLocaleString()
-            : ''}
-        </Text>
-        <Text>
-          <strong>Last Updated At:</strong>{' '}
-          {client.lastUpdatedAt
-            ? new Date(client.lastUpdatedAt.seconds * 1000).toLocaleString()
-            : ''}
-        </Text>
-        <Heading mt={10} as="h2" size="xl">
-          Files
-        </Heading>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>Name</Th>
-              <Th>Details</Th>
-              <Th>Checked</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {/* @ts-expect-error */}
-            {client.files.map((file, index) => (
-              <Tr key={index}>
-                <Td>{file.name}</Td>
-                <Td>{file.detail}</Td>
-                <Td
-                  style={{
-                    background: file.checked ? 'green' : 'red',
-                  }}
-                >
-                  {file.checked ? 'Yes' : 'No'}
-                </Td>
+    <>
+      <Hero />
+
+      <Box p={8} m="0 auto" mt={10} mb={10}>
+        <VStack spacing={4} align="stretch">
+          <Heading as="h1" size="xl">
+            {client.name}
+          </Heading>
+          <Text>
+            <strong>Details:</strong> {client.details ? client.details : ''}
+          </Text>
+          <Text>
+            <strong>Created At:</strong>{' '}
+            {client.createdAt
+              ? new Date(client.createdAt.seconds * 1000).toLocaleString()
+              : ''}
+          </Text>
+          <Text>
+            <strong>Last Updated At:</strong>{' '}
+            {client.lastUpdatedAt
+              ? new Date(client.lastUpdatedAt.seconds * 1000).toLocaleString()
+              : ''}
+          </Text>
+          <Heading mt={10} as="h2" size="xl">
+            Files
+          </Heading>
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>Name</Th>
+                <Th>Details</Th>
+                <Th>Checked</Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </VStack>
-    </Box>
+            </Thead>
+            <Tbody>
+              {/* @ts-expect-error */}
+              {client.files.map((file, index) => (
+                <Tr key={index}>
+                  <Td>{file.name}</Td>
+                  <Td>{file.detail}</Td>
+                  <Td
+                    style={{
+                      background: file.checked ? 'green' : 'red',
+                    }}
+                  >
+                    {file.checked ? 'Yes' : 'No'}
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </VStack>
+      </Box>
+      <Footer />
+    </>
   );
 };
 

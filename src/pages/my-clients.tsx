@@ -27,6 +27,8 @@ import { useEffect, useState } from 'react';
 import firebase_app from '@/firebase/config';
 
 import { Search } from '../search/Search';
+import { Footer } from '../templates/Footer';
+import { Hero } from '../templates/Hero';
 
 ChartJS.register(
   CategoryScale,
@@ -105,6 +107,8 @@ const Clients = () => {
 
   return (
     <Box p={8}>
+      <Hero />
+
       <VStack spacing={4} align="stretch">
         <Heading
           as="h1"
@@ -155,6 +159,7 @@ const Clients = () => {
           </Tbody>
         </Table>
       </VStack>
+      <Footer />
     </Box>
   );
 };
