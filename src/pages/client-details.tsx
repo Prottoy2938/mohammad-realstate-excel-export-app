@@ -32,6 +32,7 @@ const ClientDetails = () => {
   useEffect(() => {
     const fetchClient = async () => {
       if (id) {
+        // @ts-expect-error
         const docRef = doc(db, 'clients', id);
         const docSnap = await getDoc(docRef);
 
