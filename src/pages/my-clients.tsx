@@ -145,7 +145,7 @@ const Clients = () => {
                     colorScheme="green"
                     size="sm"
                     as="a"
-                    href={`/client-files?id=${client.id}`}
+                    href={`/client-details?id=${client.id}`}
                   >
                     View Details
                   </Button>

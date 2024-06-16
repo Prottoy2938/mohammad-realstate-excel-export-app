@@ -88,6 +88,7 @@ const CreateClient = () => {
         detail: fileDetails[index],
         url: fileUploads[index],
         checked: false,
+        createdAt: serverTimestamp(),
       }));
 
       // Save client data to Firestore

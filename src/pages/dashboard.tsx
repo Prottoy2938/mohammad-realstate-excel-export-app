@@ -28,7 +28,7 @@ const Index = () => {
       <Heading margin="0 auto" mt={'10vh'} textAlign={'center'} display="table">
         Dashboard
       </Heading>
-      <Search />
+      {/* <Search /> */}
       <Center h="100vh">
         <Box
           p={20}
