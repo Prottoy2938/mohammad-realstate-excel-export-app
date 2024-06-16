@@ -88,7 +88,7 @@ const CreateClient = () => {
         detail: fileDetails[index],
         url: fileUploads[index],
         checked: false,
-        createdAt: serverTimestamp(),
+        createdAt: new Date(),
       }));
 
       // Save client data to Firestore
@@ -99,7 +99,7 @@ const CreateClient = () => {
         checked: false,
         createdbyUserUID: user.uid,
         createdByUserInfo: user,
-        id:  Math.random().toString(36).substring(2, 9),
+        id: Math.random().toString(36).substring(2, 9),
         createdAt: serverTimestamp(),
         lastUpdatedAt: serverTimestamp(),
       });
