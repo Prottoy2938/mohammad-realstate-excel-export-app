@@ -22,6 +22,8 @@ import { useState } from 'react';
 import { useAuthContext } from '@/firebase/auth-context';
 
 import firebase_app from '../firebase/config';
+import { Footer } from '../templates/Footer';
+import { Hero } from '../templates/Hero';
 
 // Initialize Firebase
 const storage = getStorage(firebase_app);
@@ -134,55 +136,66 @@ const CreateClient = () => {
   };
 
   return (
-    <Box p={8}>
-      <VStack spacing={4} align="stretch">
-        <Heading as="h1" size="xl">
-          Create New Client
-        </Heading>
-        <FormControl id="client-name" isRequired>
-          <FormLabel>Client Name</FormLabel>
-          <Input
-            value={clientName}
-            onChange={(e) => setClientName(e.target.value)}
-          />
-        </FormControl>
-        <FormControl id="client-details" isRequired>
-          <FormLabel>Client Details</FormLabel>
-          <Textarea
-            value={clientDetails}
-            onChange={(e) => setClientDetails(e.target.value)}
-          />
-        </FormControl>
-        {files.map((file, index) => (
-          <Box key={index}>
-            <FormControl id={`file-name-${index}`} isRequired>
-              <FormLabel>File Name</FormLabel>
-              <Input
-                value={fileNames[index]}
-                onChange={(e) => handleFileNameChange(e, index)}
-              />
-            </FormControl>
-            {/* <FormControl id={`file-detail-${index}`} isRequired>
+    <>
+      <Hero />
+      <Box p={8}>
+        <VStack spacing={4} align="stretch">
+          <Heading as="h1" size="xl">
+            Create New Client
+          </Heading>
+          <FormControl id="client-name" isRequired>
+            <FormLabel>Client Name</FormLabel>
+            <Input
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+            />
+          </FormControl>
+          <FormControl id="client-details" isRequired>
+            <FormLabel>Client Details</FormLabel>
+            <Textarea
+              value={clientDetails}
+              onChange={(e) => setClientDetails(e.target.value)}
+            />
+          </FormControl>
+          {files.map((file, index) => (
+            <Box key={index}>
+              <FormControl id={`file-name-${index}`} isRequired>
+                <FormLabel>File Name</FormLabel>
+                <Input
+                  value={fileNames[index]}
+                  onChange={(e) => handleFileNameChange(e, index)}
+                />
+              </FormControl>
+              {/* <FormControl id={`file-detail-${index}`} isRequired>
               <FormLabel>File Detail</FormLabel>
               <Input
                 value={fileDetails[index]}
                 onChange={(e) => handleFileDetailChange(e, index)}
               />
             </FormControl> */}
-            <FormControl id={`file-${index}`} isRequired>
-              <FormLabel>File</FormLabel>
-              <Input type="file" onChange={(e) => handleFileChange(e, index)} />
-            </FormControl>
-          </Box>
-        ))}
-        <Button onClick={addFileField}>
-          {files.length ? 'Add Another File' : 'Add File'}
-        </Button>
-        <Button colorScheme="teal" onClick={handleSubmit} isLoading={isLoading}>
-          Create Client
-        </Button>
-      </VStack>
-    </Box>
+              <FormControl id={`file-${index}`} isRequired>
+                <FormLabel>File</FormLabel>
+                <Input
+                  type="file"
+                  onChange={(e) => handleFileChange(e, index)}
+                />
+              </FormControl>
+            </Box>
+          ))}
+          <Button onClick={addFileField}>
+            {files.length ? 'Add Another File' : 'Add File'}
+          </Button>
+          <Button
+            colorScheme="teal"
+            onClick={handleSubmit}
+            isLoading={isLoading}
+          >
+            Create Client
+          </Button>
+        </VStack>
+      </Box>
+      <Footer />
+    </>
   );
 };
 

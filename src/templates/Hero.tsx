@@ -39,10 +39,10 @@ const Hero = () => {
             ''
           )}
           <li>
-            <Link href="/contact">Contact Us</Link>
+            <Link href="/create-new-client">New Client</Link>
           </li>
           <li>
-            <Link href="/blogs">Blogs</Link>
+            <Link href="/my-clients">My Clients</Link>
           </li>
           <li>
             <Link href="/about">About</Link>

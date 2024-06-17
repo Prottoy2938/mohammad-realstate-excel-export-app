@@ -21,7 +21,14 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
-import { collection, getDocs, getFirestore } from 'firebase/firestore';
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  limit,
+  orderBy,
+  query,
+} from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
 import firebase_app from '@/firebase/config';
@@ -50,7 +57,13 @@ const Clients = () => {
 
   useEffect(() => {
     const fetchClients = async () => {
-      const querySnapshot = await getDocs(collection(db, 'clients'));
+      const q = query(
+        collection(db, 'clients'),
+        orderBy('createdAt', 'desc'), // Order by createdAt descending (latest first)
+        limit(100), // Limit to the first 100 documents
+      );
+
+      const querySnapshot = await getDocs(q);
       const clientsData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
