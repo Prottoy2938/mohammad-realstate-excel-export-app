@@ -177,6 +177,7 @@ const CreateClient = () => {
                 <FormLabel>File</FormLabel>
                 <Input
                   type="file"
+                  accept="image/*"
                   onChange={(e) => handleFileChange(e, index)}
                 />
               </FormControl>
