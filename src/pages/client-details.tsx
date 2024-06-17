@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Heading,
   Spinner,
   Table,
@@ -14,6 +15,7 @@ import {
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import firebase_app from '@/firebase/config';
 
@@ -28,6 +30,55 @@ const ClientDetails = () => {
   const { id } = router.query;
   const [client, setClient] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  // @ts-expect-error
+  function exportToCsv(filename, rows) {
+    // @ts-expect-error
+    const processRow = function (row) {
+      let finalVal = '';
+      for (let j = 0; j < row.length; j++) {
+        let innerValue = row[j] === null ? '' : row[j].toString();
+        if (row[j] instanceof Date) {
+          innerValue = row[j].toLocaleString();
+        }
+        let result = innerValue.replace(/"/g, '""');
+        if (result.search(/("|,|\n)/g) >= 0) result = `"${result}"`;
+        if (j > 0) finalVal += ',';
+        finalVal += result;
+      }
+      return `${finalVal}\n`;
+    };
+
+    let csvFile = '';
+    for (let i = 0; i < rows.length; i++) {
+      csvFile += processRow(rows[i]);
+    }
+
+    const blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+    // @ts-expect-error
+    if (navigator.msSaveBlob) {
+      // IE 10+
+      // @ts-expect-error
+      navigator.msSaveBlob(blob, filename);
+    } else {
+      const link = document.createElement('a');
+      if (link.download !== undefined) {
+        // feature detection
+        // Browsers that support HTML5 download attribute
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+  }
+
+  const handleFileDownload = async (excelString: any) => {
+    exportToCsv(`${uuidv4()}.csv`, JSON.parse(excelString));
+  };
 
   useEffect(() => {
     const fetchClient = async () => {
@@ -101,6 +152,7 @@ const ClientDetails = () => {
                 <Th>Name</Th>
                 <Th>Details</Th>
                 <Th>Checked</Th>
+                <Th>Download</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -108,13 +160,28 @@ const ClientDetails = () => {
               {client.files.map((file, index) => (
                 <Tr key={index}>
                   <Td>{file.name}</Td>
-                  <Td>{file.detail}</Td>
+                  <Td>{file.details}</Td>
                   <Td
                     style={{
                       background: file.checked ? 'green' : 'red',
                     }}
                   >
                     {file.checked ? 'Yes' : 'No'}
+                  </Td>
+                  <Td>
+                    {!file.checked ? (
+                      'Not available yet'
+                    ) : (
+                      <Button
+                        size="sm"
+                        colorScheme="blue"
+                        px={20}
+                        variant="outline"
+                        onClick={() => handleFileDownload(file.excelString)}
+                      >
+                        Download
+                      </Button>
+                    )}
                   </Td>
                 </Tr>
               ))}
